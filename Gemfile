@@ -1,0 +1,10 @@
+source 'https://rubygems.org'
+
+gem 'telegram-bot-ruby', '~> 2.0'
+gem 'pg', '~> 1.5'
+gem 'sequel', '~> 5.80'
+gem 'nokogiri', '~> 1.16'
+gem 'rufus-scheduler', '~> 3.9'
+gem 'puma', '~> 6.4'
+gem 'dotenv', '~> 3.1'
+gem 'tzinfo-data'
