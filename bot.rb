@@ -10,12 +10,17 @@ require_relative 'lib/digest_builder'
 TOKEN = ENV.fetch('TELEGRAM_BOT_TOKEN')
 OWNER_ID = ENV.fetch('OWNER_CHAT_ID').to_i
 
-# 1. Легкий HTTP-сервер для healthcheck хмарного хостингу (Render / Koyeb)
+# 1. Легкий HTTP-сервер для healthcheck (підтримує GET та HEAD)
 Thread.new do
   server = TCPServer.new('0.0.0.0', ENV.fetch('PORT', 8080).to_i)
   loop do
     client = server.accept
-    client.print "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 2\r\n\r\nOK"
+    request_line = client.gets
+    while (line = client.gets) && line != "\r\n"; end
+
+    is_head = request_line&.start_with?('HEAD')
+    body = is_head ? '' : 'OK'
+    client.print "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 2\r\nConnection: close\r\n\r\n#{body}"
     client.close
   rescue StandardError
     nil
